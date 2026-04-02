@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Send, Phone, Mail, MapPin, CheckCircle2 } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
+import emailjs from '@emailjs/browser';
 
 export default function Contact() {
   const [formState, setFormState] = useState({
@@ -21,10 +22,26 @@ export default function Contact() {
     e.preventDefault();
     setStatus('loading');
 
-    // Simulate form submission to Google Sheets / Backend
     try {
-      // In a real app, you'd POST to a PHP script or Google Apps Script
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await emailjs.send(
+        'service_p1s500p',
+        'template_c2143x2',
+        {
+          from_name: formState.name,
+          reply_to: formState.email,
+          subject: `New Lead: ${formState.service}`,
+          message: `
+            Name: ${formState.name}
+            Email: ${formState.email}
+            Phone: ${formState.phone}
+            Company: ${formState.company}
+            Service: ${formState.service}
+            Budget: ${formState.budget}
+            Message: ${formState.message}
+          `,
+        },
+        'Qf4-mnxfKW0-SdFRQ'
+      );
       setStatus('success');
       setFormState({
         name: '',
@@ -36,6 +53,7 @@ export default function Contact() {
         message: '',
       });
     } catch (error) {
+      console.error('EmailJS error:', error);
       setStatus('error');
     }
   };

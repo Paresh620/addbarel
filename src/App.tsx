@@ -9,6 +9,7 @@ import Services from './pages/Services';
 import Portfolio from './pages/Portfolio';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import ServiceDetail from './pages/ServiceDetail';
 import Contact from './pages/Contact';
 import Offers from './pages/Offers';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />

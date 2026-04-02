@@ -8,6 +8,7 @@ import { cn } from '../lib/utils';
 const services = [
   {
     title: 'Web Development',
+    slug: 'web-development',
     desc: 'Custom, high-performance websites built with React, Next.js, and modern tech stacks.',
     icon: Globe,
     benefits: ['Responsive Design', 'SEO Friendly', 'Fast Loading', 'Secure'],
@@ -16,6 +17,7 @@ const services = [
   },
   {
     title: 'Android Development',
+    slug: 'android-development',
     desc: 'Native and cross-platform mobile applications that provide seamless user experiences.',
     icon: Smartphone,
     benefits: ['User-Centric UI', 'High Performance', 'Offline Support', 'Scalable'],
@@ -24,6 +26,7 @@ const services = [
   },
   {
     title: 'Digital Marketing',
+    slug: 'digital-marketing',
     desc: 'Comprehensive marketing strategies to grow your brand and increase conversions.',
     icon: Megaphone,
     benefits: ['Targeted Campaigns', 'ROI Focused', 'Brand Growth', 'Analytics'],
@@ -32,6 +35,7 @@ const services = [
   },
   {
     title: 'SEO Optimization',
+    slug: 'seo-optimization',
     desc: 'Technical and on-page SEO to improve your search engine rankings organically.',
     icon: BarChart3,
     benefits: ['Higher Rankings', 'More Traffic', 'Better Visibility', 'Authority'],
@@ -40,6 +44,7 @@ const services = [
   },
   {
     title: 'Automation Solutions',
+    slug: 'automation-solutions',
     desc: 'Custom scripts and tools to automate repetitive business tasks and save time.',
     icon: Zap,
     benefits: ['Time Saving', 'Error Reduction', 'Efficiency', 'Cost Effective'],
@@ -48,6 +53,7 @@ const services = [
   },
   {
     title: 'System Management',
+    slug: 'system-management',
     desc: 'End-to-end management of your business systems, servers, and admin panels.',
     icon: Database,
     benefits: ['24/7 Monitoring', 'Security Updates', 'Backup Management', 'Uptime'],
@@ -83,27 +89,30 @@ export default function Services() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, i) => (
-            <GlassCard key={i} delay={i * 0.1} className="flex flex-col h-full">
-              <div className={cn('w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-8', service.color)}>
-                <service.icon size={32} />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">
-                {service.desc}
-              </p>
-              
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Key Benefits</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {service.benefits.map((benefit, j) => (
-                      <span key={j} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-medium text-gray-300">
-                        {benefit}
-                      </span>
-                    ))}
+            <GlassCard key={i} delay={i * 0.1} className="flex flex-col h-full p-0">
+              <Link to={`/services/${service.slug}`} className="p-8 flex flex-col h-full">
+                <div className={cn('w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-8', service.color)}>
+                  <service.icon size={32} />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">
+                  {service.desc}
+                </p>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Key Benefits</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {service.benefits.map((benefit, j) => (
+                        <span key={j} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-medium text-gray-300">
+                          {benefit}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                
+              </Link>
+              <div className="px-8 pb-8">
                 <Link
                   to="/contact"
                   className="block w-full py-3 bg-white/5 border border-white/10 hover:bg-blue-600 hover:border-blue-600 text-white text-center rounded-xl text-sm font-bold transition-all"
