@@ -1,48 +1,38 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // ===============================================================
-    // Assumed Data Model
-    // ===============================================================
-    //
-    // Collection: posts
-    // Document ID: {postId}
-    // Fields:
-    //   - title: string (required, 1-200 chars)
-    //   - content: string (required, 1-10000 chars)
-    //   - status: string (required, 'draft' or 'published')
-    //   - date: string (required, YYYY-MM-DD)
-    //   - slug: string (optional)
-    //
-    // ===============================================================
-
-    // ===============================================================
     // Helper Functions
-    // ===============================================================
     function isAuthenticated() {
       return request.auth != null;
     }
-
+    
     function isAdmin() {
-      return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "mallickparesh620@gmail.com" && request.auth.token.email_verified == true));
+      // Default admin check
+      return isAuthenticated() && 
+        (request.auth.token.email == "mallickparesh620@gmail.com" && request.auth.token.email_verified == true);
     }
 
-    function isValidPost(data) {
-      return data.keys().hasAll(['title', 'content', 'status', 'date']) &&
-             data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
-             data.content is string && data.content.size() >= 1 && data.content.size() <= 10000 &&
-             data.status in ['draft', 'published'] &&
-             data.date is string && data.date.matches("^\\d{4}-\\d{2}-\\d{2}$") &&
-             (!('slug' in data) || data.slug is string);
-    }
+    // Assumed Data Model
+    // Collection: leads
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-100 chars)
+    //   - email: string (required, email format)
+    //   - phone: string (optional, < 20 chars)
+    //   - company: string (optional, < 100 chars)
+    //   - service: string (optional, < 50 chars)
+    //   - budget: string (optional, < 50 chars)
+    //   - message: string (required, 1-2000 chars)
+    //   - createdAt: timestamp (required)
 
-    match /posts/{postId} {
-      allow read: if true; // Publicly readable
-      allow create: if isAdmin() && isValidPost(request.resource.data);
-      allow update: if isAdmin() && isValidPost(request.resource.data);
-      allow delete: if isAdmin();
+    match /leads/{leadId} {
+      allow create: if request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100 &&
+                       request.resource.data.email is string && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+                       request.resource.data.message is string && request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 2000 &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow read: if isAdmin();
+      allow update, delete: if false; // Immutable after creation
     }
   }
 }

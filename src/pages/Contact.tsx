@@ -4,6 +4,8 @@ import { motion } from 'motion/react';
 import { Send, Phone, Mail, MapPin, CheckCircle2 } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import emailjs from '@emailjs/browser';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function Contact() {
   const [formState, setFormState] = useState({
@@ -23,6 +25,13 @@ export default function Contact() {
     setStatus('loading');
 
     try {
+      // 1. Save to Firestore
+      await addDoc(collection(db, 'leads'), {
+        ...formState,
+        createdAt: serverTimestamp(),
+      });
+
+      // 2. Send Email via EmailJS
       await emailjs.send(
         'service_p1s500p',
         'template_c2143x2',
@@ -53,7 +62,7 @@ export default function Contact() {
         message: '',
       });
     } catch (error) {
-      console.error('EmailJS error:', error);
+      console.error('Error submitting form:', error);
       setStatus('error');
     }
   };

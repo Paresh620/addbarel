@@ -1,23 +1,26 @@
 {
   "entities": {
-    "Post": {
-      "title": "Post",
-      "description": "A blog post or content item.",
+    "Lead": {
+      "title": "Lead",
+      "description": "A lead submission from the website contact form.",
       "type": "object",
       "properties": {
-        "title": { "type": "string", "description": "The title of the post." },
-        "content": { "type": "string", "description": "The body content of the post." },
-        "status": { "type": "string", "enum": ["draft", "published"], "description": "The status of the post." },
-        "date": { "type": "string", "format": "date", "description": "The date the post was created." },
-        "slug": { "type": "string", "description": "The URL slug." }
+        "name": { "type": "string", "description": "Full name of the lead." },
+        "email": { "type": "string", "description": "Email address of the lead." },
+        "phone": { "type": "string", "description": "Phone number of the lead." },
+        "company": { "type": "string", "description": "Company name." },
+        "service": { "type": "string", "description": "Service requested." },
+        "budget": { "type": "string", "description": "Budget range." },
+        "message": { "type": "string", "description": "Project details." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of submission." }
       },
-      "required": ["title", "content", "status", "date"]
+      "required": ["name", "email", "message", "createdAt"]
     }
   },
   "firestore": {
-    "/posts/{postId}": {
-      "schema": { "$ref": "Post" },
-      "description": "Collection of blog posts."
+    "/leads/{leadId}": {
+      "schema": { "$ref": "Lead" },
+      "description": "Collection of all lead submissions."
     }
   }
 }

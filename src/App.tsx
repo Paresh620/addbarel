@@ -19,6 +19,8 @@ import TermsOfService from './pages/TermsOfService';
 import AdminLogin from './admin/Login';
 import AdminDashboard from './admin/Dashboard';
 import AdminContent from './admin/Content';
+import LeadsDashboard from './pages/admin/Leads';
+import Settings from './pages/admin/Settings';
 
 // Components
 import Navbar from './components/Navbar';
@@ -50,6 +52,8 @@ export default function App() {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/content/:type" element={<AdminContent />} />
+              <Route path="/admin/leads" element={<LeadsDashboard />} />
+              <Route path="/admin/settings" element={<Settings />} />
             </Routes>
           </AnimatePresence>
           <Footer />
