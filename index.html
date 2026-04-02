@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <script>
+      // Prevent window.fetch from being overwritten
+      try {
+        Object.defineProperty(window, 'fetch', {
+          writable: false,
+          configurable: false,
+          value: window.fetch
+        });
+      } catch (e) {
+        console.warn('Could not lock window.fetch', e);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

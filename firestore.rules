@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: posts
+    // Document ID: {postId}
+    // Fields:
+    //   - title: string (required, 1-200 chars)
+    //   - content: string (required, 1-10000 chars)
+    //   - status: string (required, 'draft' or 'published')
+    //   - date: string (required, YYYY-MM-DD)
+    //   - slug: string (optional)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "mallickparesh620@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidPost(data) {
+      return data.keys().hasAll(['title', 'content', 'status', 'date']) &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+             data.content is string && data.content.size() >= 1 && data.content.size() <= 10000 &&
+             data.status in ['draft', 'published'] &&
+             data.date is string && data.date.matches("^\\d{4}-\\d{2}-\\d{2}$") &&
+             (!('slug' in data) || data.slug is string);
+    }
+
+    match /posts/{postId} {
+      allow read: if true; // Publicly readable
+      allow create: if isAdmin() && isValidPost(request.resource.data);
+      allow update: if isAdmin() && isValidPost(request.resource.data);
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "Post": {
+      "title": "Post",
+      "description": "A blog post or content item.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the post." },
+        "content": { "type": "string", "description": "The body content of the post." },
+        "status": { "type": "string", "enum": ["draft", "published"], "description": "The status of the post." },
+        "date": { "type": "string", "format": "date", "description": "The date the post was created." },
+        "slug": { "type": "string", "description": "The URL slug." }
+      },
+      "required": ["title", "content", "status", "date"]
+    }
+  },
+  "firestore": {
+    "/posts/{postId}": {
+      "schema": { "$ref": "Post" },
+      "description": "Collection of blog posts."
+    }
+  }
+}
