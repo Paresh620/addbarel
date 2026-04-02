@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import GlassCard from '../../components/GlassCard';
+import { cn } from '../../lib/utils';
 
 export default function Settings() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleSave = () => {
-    // In a real app, save this to Firestore/Database
-    alert(`Lead email set to: ${email}`);
+  const handleSave = async () => {
+    setLoading(true);
+    setSuccess(false);
+    // Simulate saving to database
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setLoading(false);
+    setSuccess(true);
+    alert(`Success! Lead email has been set to: ${email}`);
   };
 
   return (
@@ -28,9 +36,13 @@ export default function Settings() {
           />
           <button
             onClick={handleSave}
-            className="w-full py-3 bg-blue-600 rounded-xl font-bold hover:bg-blue-700 transition-all"
+            disabled={loading}
+            className={cn(
+              "w-full py-3 rounded-xl font-bold transition-all disabled:opacity-50",
+              success ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+            )}
           >
-            Save Email
+            {loading ? 'Saving...' : success ? 'Saved!' : 'Save Email'}
           </button>
         </GlassCard>
       </div>

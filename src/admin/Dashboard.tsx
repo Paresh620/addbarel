@@ -65,6 +65,8 @@ export default function AdminDashboard() {
                 { label: 'Add Service', path: '/admin/content/services?action=new', icon: Settings },
                 { label: 'Add Portfolio', path: '/admin/content/portfolio?action=new', icon: Briefcase },
                 { label: 'Create Offer', path: '/admin/content/offers?action=new', icon: Tag },
+                { label: 'View Leads', path: '/admin/leads', icon: Eye },
+                { label: 'Lead Settings', path: '/admin/settings', icon: Settings },
               ].map((action, i) => (
                 <Link
                   key={i}

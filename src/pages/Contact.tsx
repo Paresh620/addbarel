@@ -6,6 +6,7 @@ import GlassCard from '../components/GlassCard';
 import emailjs from '@emailjs/browser';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { cn } from '../lib/utils';
 
 export default function Contact() {
   const [formState, setFormState] = useState({
@@ -32,7 +33,9 @@ export default function Contact() {
       });
 
       // 2. Send Email via EmailJS
-      await emailjs.send(
+      // Note: We are not awaiting this to prevent form from hanging if EmailJS fails, 
+      // but we still want to attempt it.
+      emailjs.send(
         'service_p1s500p',
         'template_c2143x2',
         {
@@ -50,7 +53,8 @@ export default function Contact() {
           `,
         },
         'Qf4-mnxfKW0-SdFRQ'
-      );
+      ).catch(err => console.error('EmailJS error:', err));
+
       setStatus('success');
       setFormState({
         name: '',
@@ -259,10 +263,18 @@ export default function Contact() {
                   <button
                     disabled={status === 'loading'}
                     type="submit"
-                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={cn(
+                      "w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed",
+                      status === 'success' ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+                    )}
                   >
                     {status === 'loading' ? (
                       <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : status === 'success' ? (
+                      <>
+                        <span>Your submit successful</span>
+                        <CheckCircle2 size={18} />
+                      </>
                     ) : (
                       <>
                         <span>Send Message</span>
