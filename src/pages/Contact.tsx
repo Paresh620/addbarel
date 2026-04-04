@@ -55,6 +55,23 @@ export default function Contact() {
         'Qf4-mnxfKW0-SdFRQ'
       ).catch(err => console.error('EmailJS error:', err));
 
+      // 3. Send to Google Sheets
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      fetch(import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formState),
+        signal: controller.signal
+      })
+      .then(() => clearTimeout(timeoutId))
+      .catch(err => {
+        clearTimeout(timeoutId);
+        console.error('Google Sheets error:', err);
+      });
+
       setStatus('success');
       setFormState({
         name: '',

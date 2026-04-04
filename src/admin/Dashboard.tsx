@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { LayoutDashboard, FileText, Briefcase, Tag, Settings, LogOut, Plus, Search, Edit2, Trash2, Eye } from 'lucide-react';
+import { LayoutDashboard, FileText, Briefcase, Tag, Settings, LogOut, Plus, Search, Edit2, Trash2, Eye, User } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { collection, getCountFromServer } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import GlassCard from '../components/GlassCard';
 import { cn } from '../lib/utils';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [leadCount, setLeadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchLeadCount = async () => {
+      try {
+        const snapshot = await getCountFromServer(collection(db, 'leads'));
+        setLeadCount(snapshot.data().count);
+      } catch (error) {
+        console.error('Error fetching lead count:', error);
+      }
+    };
+    fetchLeadCount();
+  }, []);
 
   const stats = [
     { label: 'Total Posts', value: '12', icon: FileText, color: 'text-blue-400' },
     { label: 'Services', value: '8', icon: Settings, color: 'text-purple-400' },
     { label: 'Portfolio', value: '24', icon: Briefcase, color: 'text-pink-400' },
-    { label: 'Active Offers', value: '3', icon: Tag, color: 'text-yellow-400' },
+    { label: 'Total Leads', value: leadCount.toString(), icon: User, color: 'text-green-400' },
   ];
 
   const recentActivity = [
@@ -40,19 +55,26 @@ export default function AdminDashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {stats.map((stat, i) => (
-            <GlassCard key={i} delay={i * 0.1} hover={false}>
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
-                  <h3 className="text-3xl font-bold">{stat.value}</h3>
+          {stats.map((stat, i) => {
+            const card = (
+              <GlassCard key={i} delay={i * 0.1} hover={false}>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
+                    <h3 className="text-3xl font-bold">{stat.value}</h3>
+                  </div>
+                  <div className={cn('p-3 rounded-xl bg-white/5', stat.color)}>
+                    <stat.icon size={24} />
+                  </div>
                 </div>
-                <div className={cn('p-3 rounded-xl bg-white/5', stat.color)}>
-                  <stat.icon size={24} />
-                </div>
-              </div>
-            </GlassCard>
-          ))}
+              </GlassCard>
+            );
+            return stat.label === 'Total Leads' ? (
+              <Link key={i} to="/admin/leads" className="block hover:scale-[1.02] transition-transform">
+                {card}
+              </Link>
+            ) : card;
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
